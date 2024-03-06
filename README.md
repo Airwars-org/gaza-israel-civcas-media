@@ -1,3 +1,6 @@
+
+![img](https://github.com/Airwars-org/gaza-israele-civcas-media/assets/20107875/dde029fc-9f83-4cf1-8039-5da726fba649)
+
 <h2>
     This web page collects all images from Airwars assessments of the
     <a href="https://airwars.org/conflict/israel-and-gaza-2023/"
