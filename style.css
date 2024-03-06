@@ -3,6 +3,11 @@ body {
     text-rendering: optimizeLegibility;
 }
 
+p {
+    padding: 5px;
+    margin: 0;
+}
+
 a {
     color: blue;
     text-decoration: none;
