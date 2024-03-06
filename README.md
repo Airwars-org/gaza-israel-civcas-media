@@ -1,5 +1,4 @@
-
-![img](https://github.com/Airwars-org/gaza-israele-civcas-media/assets/20107875/dde029fc-9f83-4cf1-8039-5da726fba649)
+![img](https://github.com/Airwars-org/gaza-israel-civcas-media/assets/20107875/b1674b9e-2b42-48b6-a0c9-a31324b0e143)
 
 <h2>
     This web page collects all images from Airwars assessments of the
