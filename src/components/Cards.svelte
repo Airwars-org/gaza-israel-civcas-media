@@ -1,29 +1,93 @@
 <script>
     export let data;
+    import { searchQuery, blurAmount } from "@stores";
+
     function toggleBlur(event) {
         const img = event.target;
-        img.classList.toggle("blurred");
+        img.classList.toggle("unblurred");
     }
+
+    let rangeSnippet = 50;
+
+    function generateSnippets(text, token) {
+        let snippets = [];
+        let index = 0;
+
+        while (index !== -1) {
+            let startIndex = text.toLowerCase().indexOf(token.toLowerCase(), index);
+
+            if (startIndex === -1) {
+                break;
+            }
+
+            let endIndex = startIndex + token.length;
+            let snippet = "";
+
+            for (
+                let i = Math.max(0, startIndex - rangeSnippet);
+                i < Math.min(text.length, endIndex + rangeSnippet);
+                i++
+            ) {
+                snippet += text[i];
+            }
+
+            let finalSnippet = snippet.split(" ").slice(1, -1).join(" ");
+            snippets.push(finalSnippet);
+
+            index = endIndex;
+        }
+
+        return snippets;
+    }
+
+    const stripHtmlTags = (html) => {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        return doc.body.textContent || "";
+    };
+
+    $: snippets =
+        $searchQuery.length >= 4
+            ? generateSnippets(
+                  stripHtmlTags(data.content),
+                  $searchQuery.toLowerCase(),
+              )
+            : [];
 </script>
 
 <section>
-    <h1>
-        {data.title.replace("&#8211;", "")}
-    </h1>
-    <a href={data.link} target="_blank">Source ↗</a>
+    {#if snippets.length > 0}
+        <div class="snippet">
+            {#each snippets as snippet}
+                <div>
+                    ...{@html snippet.replace(
+                        $searchQuery.toLowerCase(),
+                        `<strong>${$searchQuery}</strong>`,
+                    )}...
+                </div>
+            {/each}
+        </div>
+    {/if}
 
     <div class="medias">
         {#each data.media as m}
             <div class="media">
                 <img
-                    class="blurred"
                     src={m.url}
                     alt={m.title}
                     on:click={toggleBlur}
                     on:keydown={toggleBlur}
+                    class:unblurred={$blurAmount === 0 && unblurred}
+                    style={`filter: blur(${$blurAmount}px) grayscale(100%);`}
                 />
             </div>
         {/each}
+    </div>
+
+    <div class="info">
+        <p>
+            {data.title.replace("&#8211;", "")}
+            <a href={data.link} target="_blank">Source ↗</a>
+        </p>
     </div>
 </section>
 
@@ -33,16 +97,11 @@
         border-bottom: 1px dashed;
     }
 
-    h1 {
-        font-size: 24px;
-        font-weight: 400;
+    .snippet {
+        padding: 10px 0;
+        font-style: italic;
     }
 
-    a {
-        font-size: 18px;
-    }
-
-    h1,
     p {
         padding: 0;
         margin: 0;
@@ -72,7 +131,7 @@
         transition: filter 0.3s ease;
     }
 
-    .blurred {
-        filter: blur(5px) grayscale(100%);
+    .unblurred {
+        filter: blur(0) grayscale(100%) !important;
     }
 </style>

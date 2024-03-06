@@ -20,8 +20,9 @@
             let datum = [];
 
             while (true) {
+                
                 // testing purposes
-                if (i == 8) {
+                if (i == 2) {
                     break;
                 }
 

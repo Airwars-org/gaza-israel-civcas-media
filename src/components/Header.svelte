@@ -1,8 +1,15 @@
 <script>
-    import { searchQuery } from "@stores";
+    import { blurAmount } from "@stores";
     export let filteredData;
     export let data;
     import Search from "./Search.svelte";
+
+    let rangeValue = blurAmount;
+
+    function handleBlurChange(event) {
+        const newBlurAmount = event.target.value;
+        blurAmount.set(newBlurAmount);
+    }
 </script>
 
 <section>
@@ -11,34 +18,50 @@
             This web page collects all images from Airwars assessments of the
             <a href="https://airwars.org/conflict/israel-and-gaza-2023/"
                 >Israeli and Gaza conflict 2023</a
-            >. Due to the graphic content, all the images are blurred. By
-            clicking on each image it is possible to unobscure them.
+            >.
+            <br />
+            Due to the graphic content, all the images are blurred.
+            <br />
+            By clicking on each image it is possible to unobscure them.
         </p>
     </div>
-    <div class="search">
-        {#if data.length > 0}
-            <p>
+
+    {#if data.length > 0}
+        <div class="search">
+            <div>
                 The search input allows results to be filtered by the terms
                 mentioned in the full reports of each civcas.
-            </p>
-            <Search />
-            <p>
-                {filteredData.length} results
-            </p>
-            {#if $searchQuery.length >= 4}
-                <p>
-                    Filtering assesments containing the word: "{$searchQuery}"
-                </p>
-            {/if}
-        {/if}
-    </div>
+
+                <Search results={filteredData.length} />
+            </div>
+        </div>
+
+        <div class="blur">
+            Change the value to adjust the blur.
+            <input
+                type="range"
+                name="blur"
+                bind:value={rangeValue}
+                min="0"
+                max="20"
+                on:input={handleBlurChange}
+            />
+        </div>
+    {/if}
 </section>
 
 <style>
     section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
         border-bottom: 1px solid;
         /* min-heights: 300px; */
         margin-bottom: 10px;
+    }
+
+    section > * {
+        max-width: 400px;
     }
 
     .intro {
@@ -46,7 +69,8 @@
         max-width: 640px;
     }
 
-    .search {
+    .search,
+    .blur {
         color: rgb(145, 145, 145);
     }
 </style>
