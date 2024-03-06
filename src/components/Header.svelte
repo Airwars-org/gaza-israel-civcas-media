@@ -58,6 +58,11 @@
         border-bottom: 1px solid;
         /* min-heights: 300px; */
         margin-bottom: 10px;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background-color: white;
+        padding: 10px;
     }
 
     section > * {
