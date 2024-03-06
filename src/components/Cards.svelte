@@ -136,6 +136,7 @@
     }
 
     .info {
+        color: rgb(145, 145, 145);
         padding: 10px 0;
     }
 
