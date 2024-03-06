@@ -11,6 +11,7 @@
     let data = [];
     let posts = [];
     let filteredData = [];
+    let loading = "";
 
     onMount(async () => {
         posts = await singleQuery(`${query}&per_page=${pagNr}`);
@@ -21,7 +22,7 @@
 
             while (true) {
                 console.log(i, i * pagNr);
-                
+                loading = `${i * pagNr}`;
                 // testing purposes
                 if (i == 15) {
                     break;
@@ -57,7 +58,7 @@
 
         data = await Promise.all(
             posts
-                .map(async (d) => {
+                .map(async (d, i) => {
                     try {
                         const mediaResponse = await fetch(
                             `${d._links["wp:attachment"]?.[0].href}&per_page=${pagNr}`,
@@ -78,8 +79,10 @@
                             content: d.content.rendered,
                             link: d.link,
                             media: mediaData.map((i) => ({
-                                low: i.media_details.sizes?.thumbnail?.source_url,
-                                medium: i.media_details.sizes?.medium?.source_url,
+                                low: i.media_details.sizes?.thumbnail
+                                    ?.source_url,
+                                medium: i.media_details.sizes?.medium
+                                    ?.source_url,
                                 link: i.link,
                                 title: i.title.rendered,
                             })),
@@ -108,7 +111,7 @@
 <Header {filteredData} {data} />
 
 {#if posts.length === 0}
-    <p>Loading CIVCAS...</p>
+    <p>Loading {loading} CIVCAS...</p>
 {:else if data.length === 0}
     <p>Loading Images...</p>
 {:else}
