@@ -1,6 +1,7 @@
 <script>
     import { searchQuery } from "@stores";
     export let filteredData;
+    export let data;
     import Search from "./Search.svelte";
 </script>
 
@@ -15,7 +16,7 @@
         </p>
     </div>
     <div class="search">
-        {#if filteredData.length > 0}
+        {#if data.length > 0}
             <p>
                 The search input allows results to be filtered by the terms
                 mentioned in the full reports of each civcas.

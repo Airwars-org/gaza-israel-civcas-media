@@ -102,7 +102,7 @@
             : data;
 </script>
 
-<Header {filteredData} />
+<Header {filteredData} {data} />
 
 {#if posts.length === 0}
     <p>Loading CIVCAS...</p>
