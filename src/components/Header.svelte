@@ -43,7 +43,7 @@
                 name="blur"
                 bind:value={rangeValue}
                 min="0"
-                max="20"
+                max="5"
                 on:input={handleBlurChange}
             />
         </div>
