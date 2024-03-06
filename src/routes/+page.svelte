@@ -20,9 +20,10 @@
             let datum = [];
 
             while (true) {
+                console.log(i, i * pagNr);
                 
                 // testing purposes
-                if (i == 2) {
+                if (i == 15) {
                     break;
                 }
 
@@ -77,7 +78,8 @@
                             content: d.content.rendered,
                             link: d.link,
                             media: mediaData.map((i) => ({
-                                url: i.source_url,
+                                low: i.media_details.sizes?.thumbnail?.source_url,
+                                medium: i.media_details.sizes?.medium?.source_url,
                                 link: i.link,
                                 title: i.title.rendered,
                             })),

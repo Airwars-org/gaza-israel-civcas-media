@@ -14,7 +14,9 @@
         let index = 0;
 
         while (index !== -1) {
-            let startIndex = text.toLowerCase().indexOf(token.toLowerCase(), index);
+            let startIndex = text
+                .toLowerCase()
+                .indexOf(token.toLowerCase(), index);
 
             if (startIndex === -1) {
                 break;
@@ -72,12 +74,13 @@
         {#each data.media as m}
             <div class="media">
                 <img
-                    src={m.url}
+                    src={m.medium}
                     alt={m.title}
                     on:click={toggleBlur}
                     on:keydown={toggleBlur}
                     class:unblurred={$blurAmount === 0 && unblurred}
                     style={`filter: blur(${$blurAmount}px) grayscale(100%);`}
+                    loading="lazy"
                 />
             </div>
         {/each}
@@ -129,9 +132,15 @@
         object-fit: contain;
         filter: grayscale(100%);
         transition: filter 0.3s ease;
+        border: 1px dashed rgb(145, 145, 145);
+    }
+
+    .info {
+        padding: 10px 0;
     }
 
     .unblurred {
+        color: rgb(145, 145, 145);
         filter: blur(0) grayscale(100%) !important;
     }
 </style>
