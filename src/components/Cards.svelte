@@ -96,7 +96,7 @@
 
 <style>
     section {
-        padding: 5px;
+        padding: 20px 0;
         border-bottom: 1px dashed;
     }
 
