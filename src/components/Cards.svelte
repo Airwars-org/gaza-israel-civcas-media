@@ -73,6 +73,6 @@
     }
 
     .blurred {
-        filter: blur(2px) grayscale(100%);
+        filter: blur(5px) grayscale(100%);
     }
 </style>
