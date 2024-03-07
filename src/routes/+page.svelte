@@ -95,7 +95,7 @@
                 .filter(Boolean),
         );
 
-        console.log(data);
+        // console.log(data);
     });
 
     $: filteredData =
