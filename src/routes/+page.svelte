@@ -89,10 +89,10 @@
                         };
                     } catch (error) {
                         console.error("Error fetching media data:", error);
-                        return null; // or handle the error in a way that suits your application
+                        return null;
                     }
                 })
-                .filter(Boolean), // filter out null values from failed media requests
+                .filter(Boolean),
         );
 
         console.log(data);
