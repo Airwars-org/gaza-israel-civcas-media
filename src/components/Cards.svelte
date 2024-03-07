@@ -70,21 +70,23 @@
         </div>
     {/if}
 
-    <div class="medias">
-        {#each data.media as m}
-            <div class="media">
-                <img
-                    src={m.medium}
-                    alt={m.title}
-                    on:click={toggleBlur}
-                    on:keydown={toggleBlur}
-                    class:unblurred={$blurAmount === 0 && unblurred}
-                    style={`filter: blur(${$blurAmount}px) grayscale(100%);`}
-                    loading="lazy"
-                />
-            </div>
-        {/each}
-    </div>
+    {#if data.media}
+        <div class="medias">
+            {#each data.media as m}
+                <div class="media">
+                    <img
+                        src={m.medium}
+                        alt={m.title}
+                        on:click={toggleBlur}
+                        on:keydown={toggleBlur}
+                        class:unblurred={$blurAmount === 0 && unblurred}
+                        style={`filter: blur(${$blurAmount}px) grayscale(100%);`}
+                        loading="lazy"
+                    />
+                </div>
+            {/each}
+        </div>
+    {/if}
 
     <div class="info">
         <p>
@@ -92,16 +94,19 @@
             <a href={data.link} target="_blank">Source ↗</a>
         </p>
     </div>
+
+    {#if !data?.media}
+        <div class="loading">Loading images...</div>
+    {/if}
 </section>
 
 <style>
     section {
-        padding: 20px 10px;
+        padding: 10px 20px;
         border-bottom: 1px dashed;
     }
 
     .snippet {
-        padding: 10px 0;
         font-style: italic;
     }
 
@@ -116,6 +121,10 @@
         height: fit-content;
     }
 
+    .loading {
+        color: rgb(145, 145, 145);
+    }
+    
     .media {
         display: inline-flex;
         width: 100px;

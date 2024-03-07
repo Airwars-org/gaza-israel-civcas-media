@@ -26,28 +26,28 @@
         </p>
     </div>
 
-    {#if data.length > 0}
+    {#if data?.length > 0}
         <div class="search">
             <div>
                 The search input allows results to be filtered by the terms
                 mentioned in the full reports of each civcas.
 
-                <Search results={filteredData.length} />
+                <Search results={filteredData?.length} />
             </div>
         </div>
-
-        <div class="blur">
-            Change the value to adjust the blur.
-            <input
-                type="range"
-                name="blur"
-                bind:value={rangeValue}
-                min="0"
-                max="5"
-                on:input={handleBlurChange}
-            />
-        </div>
     {/if}
+
+    <div class="blur">
+        Change the value to adjust the blur.
+        <input
+            type="range"
+            name="blur"
+            bind:value={rangeValue}
+            min="0"
+            max="5"
+            on:input={handleBlurChange}
+        />
+    </div>
 </section>
 
 <style>

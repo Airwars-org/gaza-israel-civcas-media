@@ -5,117 +5,154 @@
 
     import { searchQuery } from "@stores";
 
-    const query = "https://airwars.org/wp-json/wp/v2/civ?country=767&after=2023-10-07T00:00:00";
+    const query =
+        "https://airwars.org/wp-json/wp/v2/civ?country=767&after=2023-10-07T00:00:00";
     const pagNr = 25;
 
     let data = [];
-    let posts = [];
-    let filteredData = [];
-    let loading = "";
+    let loadingPosts = "";
 
     onMount(async () => {
-        posts = await singleQuery(`${query}&per_page=${pagNr}`);
+        data = await fetchPosts(`${query}&per_page=${pagNr}`);
+        await fetchImages();
+    });
 
-        async function singleQuery(query) {
-            let i = 1;
-            let datum = [];
+    async function fetchPosts(query) {
+        let i = 1;
+        let postsData = [];
 
-            while (true) {
-                loading = `${i * pagNr}`;
-                
-                // testing purposes
-                // if (i == 15) {
-                //     break;
-                // }
+        while (true) {
+            loadingPosts = `${i * pagNr}`;
 
+            try {
+                const response = await fetch(`${query}&page=${i}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const items = await response.json();
+
+                if (items.length > 0) {
+                    postsData.push(...items);
+                    i++;
+                } else {
+                    break;
+                }
+            } catch (error) {
+                break;
+            }
+        }
+
+        return postsData
+            .map((d) => ({
+                id: d.id,
+                link: d.link,
+                title: d.title.rendered,
+                content: d.content.rendered,
+                _links: d._links["wp:attachment"]?.[0].href,
+            }))
+            .sort((a, b) => b.count - a.count);
+    }
+
+    // async function fetchImages() {
+    //     if (data.length > 0) {
+    //         data = await Promise.all(
+    //             data
+    //                 .map(async (d, i) => {
+    //                     try {
+    //                         const mediaResponse = await fetch(
+    //                             `${d._links}&per_page=${pagNr}`,
+    //                         );
+
+    //                         if (!mediaResponse.ok) {
+    //                             throw new Error(
+    //                                 `HTTP error! Status: ${mediaResponse.status}`,
+    //                             );
+    //                         }
+
+    //                         const mediaData = await mediaResponse.json();
+
+    //                         return {
+    //                             id: d.id,
+    //                             title: d.title,
+    //                             content: d.content,
+    //                             link: d.link,
+    //                             media: mediaData.map((i) => ({
+    //                                 low: i.media_details.sizes?.thumbnail
+    //                                     ?.source_url,
+    //                                 medium: i.media_details.sizes?.medium
+    //                                     ?.source_url,
+    //                                 title: d.title,
+    //                             })),
+    //                         };
+    //                     } catch (error) {
+    //                         return null;
+    //                     }
+    //                 })
+    //                 .filter(Boolean),
+    //         );
+    //     }
+    // }
+    async function fetchImages() {
+        if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                const d = data[i];
                 try {
-                    const response = await fetch(`${query}&page=${i}`);
+                    const mediaResponse = await fetch(
+                        `${d._links}&per_page=${pagNr}`,
+                    );
 
-                    if (!response.ok) {
+                    if (!mediaResponse.ok) {
                         throw new Error(
-                            `HTTP error! Status: ${response.status}`,
+                            `HTTP error! Status: ${mediaResponse.status}`,
                         );
                     }
 
-                    const items = await response.json();
+                    const mediaData = await mediaResponse.json();
 
-                    if (items.length > 0) {
-                        datum.push(...items);
-                        i++;
-                    } else {
-                        break;
-                    }
+                    data[i] = {
+                        id: d.id,
+                        title: d.title,
+                        content: d.content,
+                        link: d.link,
+                        media: mediaData.map((i) => ({
+                            low: i.media_details.sizes?.thumbnail?.source_url,
+                            medium: i.media_details.sizes?.medium?.source_url,
+                            title: d.title,
+                        })),
+                    };
                 } catch (error) {
-                    console.error("Error fetching data:", error);
-                    break;
+                    data[i] = null;
                 }
             }
 
-            return datum
-                .map((d) => ({ ...d }))
-                .sort((a, b) => b.count - a.count);
+            data = data.filter(Boolean);
         }
+    }
 
-        data = await Promise.all(
-            posts
-                .map(async (d, i) => {
-                    try {
-                        const mediaResponse = await fetch(
-                            `${d._links["wp:attachment"]?.[0].href}&per_page=${pagNr}`,
-                        );
-
-                        if (!mediaResponse.ok) {
-                            throw new Error(
-                                `HTTP error! Status: ${mediaResponse.status}`,
-                            );
-                        }
-
-                        const mediaData = await mediaResponse.json();
-
-                        return {
-                            id: d.id,
-                            title: d.title.rendered,
-                            slug: d.slug,
-                            content: d.content.rendered,
-                            link: d.link,
-                            media: mediaData.map((i) => ({
-                                low: i.media_details.sizes?.thumbnail
-                                    ?.source_url,
-                                medium: i.media_details.sizes?.medium
-                                    ?.source_url,
-                                link: i.link,
-                                title: i.title.rendered,
-                            })),
-                        };
-                    } catch (error) {
-                        console.error("Error fetching media data:", error);
-                        return null;
-                    }
-                })
-                .filter(Boolean),
-        );
-
-        // console.log(data);
-    });
-
-    $: filteredData =
+    $: filteredPosts =
         ($searchQuery.length >= 4) & (data.length > 0)
-            ? data.filter((item) =>
-                  item.content
+            ? data.filter((post) =>
+                  post.content
                       .toLowerCase()
                       .includes($searchQuery.toLowerCase()),
               )
             : data;
 </script>
 
-<Header {filteredData} {data} />
+<Header {filteredPosts} {data} />
 
-{#if posts.length === 0}
-    <p>Loading {loading} CIVCAS...</p>
-{:else if data.length === 0}
-    <p>Loading Images...</p>
+{#if data.length === 0}
+    <p>Loading {loadingPosts} CIVCAS...</p>
 {:else}
-    {#each filteredData as d}
-        <Cards data={d} />
+    {#each filteredPosts as post}
+        <Cards data={post} />
     {/each}
 {/if}
+
+<style>
+    p {
+        padding: 10px;
+    }
+</style>
