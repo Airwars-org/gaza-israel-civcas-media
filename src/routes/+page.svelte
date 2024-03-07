@@ -21,7 +21,6 @@
             let datum = [];
 
             while (true) {
-                console.log(i, i * pagNr);
                 loading = `${i * pagNr}`;
                 
                 // testing purposes
