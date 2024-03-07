@@ -5,7 +5,7 @@
 
     import { searchQuery } from "@stores";
 
-    const query = "https://airwars.org/wp-json/wp/v2/civ?conflict=93644";
+    const query = "https://airwars.org/wp-json/wp/v2/civ?country=767&after=2023-10-07T00:00:00";
     const pagNr = 25;
 
     let data = [];
@@ -23,10 +23,11 @@
             while (true) {
                 console.log(i, i * pagNr);
                 loading = `${i * pagNr}`;
+                
                 // testing purposes
-                if (i == 15) {
-                    break;
-                }
+                // if (i == 15) {
+                //     break;
+                // }
 
                 try {
                     const response = await fetch(`${query}&page=${i}`);
