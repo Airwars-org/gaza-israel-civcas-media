@@ -1,6 +1,6 @@
 <script>
     import { blurAmount } from "@stores";
-    export let filteredData;
+    export let filteredPosts;
     export let data;
     import Search from "./Search.svelte";
 
@@ -32,7 +32,7 @@
                 The search input allows results to be filtered by the terms
                 mentioned in the full reports of each civcas.
 
-                <Search results={filteredData?.length} />
+                <Search results={filteredPosts?.length} />
             </div>
         </div>
     {/if}
