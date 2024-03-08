@@ -6,7 +6,7 @@
     import { searchQuery } from "@stores";
 
     const query =
-        "https://airwars.org/wp-json/wp/v2/civ?country=767&after=2023-10-07T00:00:00";
+        "https://airwars.org/wp-json/wp/v2/civ?country=767&after=2023-10-06T00:00:00";
     const pagNr = 25;
 
     let data = [];
@@ -133,12 +133,18 @@
 
     $: filteredPosts =
         ($searchQuery.length >= 4) & (data.length > 0)
-            ? data.filter((post) =>
-                  post.content
-                      .toLowerCase()
-                      .includes($searchQuery.toLowerCase()),
+            ? data.filter(
+                  (post) =>
+                      post.content
+                          .toLowerCase()
+                          .includes($searchQuery.toLowerCase()) |
+                      post.title
+                          .toLowerCase()
+                          .includes($searchQuery.toLowerCase()),
               )
             : data;
+
+    $: console.log(filteredPosts.map((d) => d.title));
 </script>
 
 <Header {filteredPosts} {data} />
