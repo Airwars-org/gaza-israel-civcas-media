@@ -133,15 +133,13 @@
 
     $: filteredPosts =
         ($searchQuery.length >= 4) & (data.length > 0)
-            ? data.filter(
-                  (post) =>
-                      post.content
-                          .toLowerCase()
-                          .includes($searchQuery.toLowerCase()),
+            ? data.filter((post) =>
+                  post.content
+                      .toLowerCase()
+                      .includes($searchQuery.toLowerCase()),
               )
             : data;
 
-    $: console.log(filteredPosts.map((d) => d.title));
 </script>
 
 <Header {filteredPosts} {data} />
