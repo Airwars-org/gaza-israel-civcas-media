@@ -137,9 +137,6 @@
                   (post) =>
                       post.content
                           .toLowerCase()
-                          .includes($searchQuery.toLowerCase()) |
-                      post.title
-                          .toLowerCase()
                           .includes($searchQuery.toLowerCase()),
               )
             : data;
