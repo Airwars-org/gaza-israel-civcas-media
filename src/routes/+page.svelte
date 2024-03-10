@@ -55,76 +55,46 @@
             .sort((a, b) => b.count - a.count);
     }
 
-    // async function fetchImages() {
-    //     if (data.length > 0) {
-    //         data = await Promise.all(
-    //             data
-    //                 .map(async (d, i) => {
-    //                     try {
-    //                         const mediaResponse = await fetch(
-    //                             `${d._links}&per_page=${pagNr}`,
-    //                         );
-
-    //                         if (!mediaResponse.ok) {
-    //                             throw new Error(
-    //                                 `HTTP error! Status: ${mediaResponse.status}`,
-    //                             );
-    //                         }
-
-    //                         const mediaData = await mediaResponse.json();
-
-    //                         return {
-    //                             id: d.id,
-    //                             title: d.title,
-    //                             content: d.content,
-    //                             link: d.link,
-    //                             media: mediaData.map((i) => ({
-    //                                 low: i.media_details.sizes?.thumbnail
-    //                                     ?.source_url,
-    //                                 medium: i.media_details.sizes?.medium
-    //                                     ?.source_url,
-    //                                 title: d.title,
-    //                             })),
-    //                         };
-    //                     } catch (error) {
-    //                         return null;
-    //                     }
-    //                 })
-    //                 .filter(Boolean),
-    //         );
-    //     }
-    // }
     async function fetchImages() {
+        const batchSize = 20;
+
         if (data.length > 0) {
-            for (let i = 0; i < data.length; i++) {
-                const d = data[i];
-                try {
-                    const mediaResponse = await fetch(
-                        `${d._links}&per_page=${pagNr}`,
-                    );
+            for (let i = 0; i < data.length; i += batchSize) {
+                const batch = data.slice(i, i + batchSize);
 
-                    if (!mediaResponse.ok) {
-                        throw new Error(
-                            `HTTP error! Status: ${mediaResponse.status}`,
-                        );
-                    }
+                await Promise.all(
+                    batch.map(async (d, index) => {
+                        try {
+                            const mediaResponse = await fetch(
+                                `${d._links}&per_page=${pagNr}`,
+                            );
 
-                    const mediaData = await mediaResponse.json();
+                            if (!mediaResponse.ok) {
+                                throw new Error(
+                                    `HTTP error! Status: ${mediaResponse.status}`,
+                                );
+                            }
 
-                    data[i] = {
-                        id: d.id,
-                        title: d.title,
-                        content: d.content,
-                        link: d.link,
-                        media: mediaData.map((i) => ({
-                            low: i.media_details.sizes?.thumbnail?.source_url,
-                            medium: i.media_details.sizes?.medium?.source_url,
-                            title: d.title,
-                        })),
-                    };
-                } catch (error) {
-                    data[i] = null;
-                }
+                            const mediaData = await mediaResponse.json();
+
+                            data[i + index] = {
+                                id: d.id,
+                                title: d.title,
+                                content: d.content,
+                                link: d.link,
+                                media: mediaData.map((i) => ({
+                                    low: i.media_details.sizes?.thumbnail
+                                        ?.source_url,
+                                    medium: i.media_details.sizes?.medium
+                                        ?.source_url,
+                                    title: d.title,
+                                })),
+                            };
+                        } catch (error) {
+                            data[i + index] = null;
+                        }
+                    }),
+                );
             }
 
             data = data.filter(Boolean);
@@ -139,7 +109,6 @@
                       .includes($searchQuery.toLowerCase()),
               )
             : data;
-
 </script>
 
 <Header {filteredPosts} {data} />
