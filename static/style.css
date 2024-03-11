@@ -16,6 +16,6 @@ a {
 
 @font-face {
     font-family: "Inter";
-    src: url("/Inter-Regular.ttf") format("truetype");
+    src: url("inter_Inter-Regular.woff") format("woff");
     font-weight: 400;
 }
