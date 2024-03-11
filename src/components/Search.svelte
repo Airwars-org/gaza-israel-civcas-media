@@ -16,11 +16,11 @@
     />
     {results} results
 </div>
-<div>
+<!-- <div>
     {#if $searchQuery.length >= 4}
-        Filtering assesments containing the word: "{$searchQuery}"
+        Filtering assessments containing the word: "{$searchQuery}"
     {/if}
-</div>
+</div> -->
 
 <style>
     div {
