@@ -10,7 +10,7 @@
     const pagNr = 25;
 
     let data = [];
-    let loadingPosts = "";
+    let loadingPosts = 0;
 
     onMount(async () => {
         data = await fetchPosts(`${query}&per_page=${pagNr}`);
@@ -22,8 +22,6 @@
         let postsData = [];
 
         while (true) {
-            loadingPosts = `${i * pagNr}`;
-
             try {
                 const response = await fetch(`${query}&page=${i}`);
 
@@ -32,6 +30,7 @@
                 }
 
                 const items = await response.json();
+                loadingPosts = loadingPosts + items.length;
 
                 if (items.length > 0) {
                     postsData.push(...items);
